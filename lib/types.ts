@@ -1,3 +1,7 @@
+export interface Props {
+  children: React.ReactNode;
+}
+
 export type Pog = {
   id?: number;
   name: string;

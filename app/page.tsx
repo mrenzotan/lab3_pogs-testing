@@ -1,116 +1,70 @@
 'use client';
-import { useState, useEffect } from 'react';
-import { Pog, User } from '@/lib/types';
 
-const Home = () => {
-  const [pogs, setPogs] = useState<Pog[]>([]);
-  const [users, setUsers] = useState<User[]>([]);
+import React, { useState } from 'react';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const pogResponse = await fetch('/api/pogs');
-      const pogData = await pogResponse.json();
-      setPogs(pogData);
+export default function LoginPage() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-      const userResponse = await fetch('/api/users');
-      const userData = await userResponse.json();
-      setUsers(userData);
-    };
-    fetchData();
-  }, []);
-
-  const handleCreatePog = async (pog: Pog) => {
-    const response = await fetch('/api/pogs', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(pog),
-    });
-    const data = await response.json();
-    setPogs([...pogs, data]);
-  };
-
-  const handleUpdatePog = async (pog: Pog) => {
-    const response = await fetch(`/api/pogs?id=${pog.id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(pog),
-    });
-    const data = await response.json();
-    setPogs(pogs.map((p) => (p.id === data.id ? data : p)));
-  };
-
-  const handleDeletePog = async (id: number | undefined) => {
-    if (typeof id === 'number') {
-      await fetch(`/api/pogs?id=${id}`, {
-        method: 'DELETE',
-      });
-      setPogs(pogs.filter((p) => p.id !== id));
-    } else {
-      console.error('Invalid pog ID');
-    }
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    // Add your login logic here
+    console.log('Email:', email);
+    console.log('Password:', password);
   };
 
   return (
-    <div>
-      <h1>PogsChamp</h1>
-      <h2>Pogs</h2>
-      <ul>
-        {pogs.map((pog) => (
-          <li key={pog.id}>
-            {pog.name} - {pog.ticker_symbol} - {pog.price} - {pog.color}
-            <button onClick={() => handleUpdatePog(pog)}>Update</button>
-            <button onClick={() => handleDeletePog(pog.id)}>Delete</button>
-          </li>
-        ))}
-      </ul>
-      <h2>Users</h2>
-      <ul>
-        {users.map((user) => (
-          <li key={user.id}>
-            {user.name} - {user.email} - {user.isAdmin ? 'Admin' : 'User'} -{' '}
-            {user.balance}
-          </li>
-        ))}
-      </ul>
-      <h2>Create Pog</h2>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          const formData = new FormData(e.target as HTMLFormElement);
-          const pog: Pog = {
-            name: formData.get('name') as string,
-            ticker_symbol: formData.get('ticker_symbol') as string,
-            price: parseFloat(formData.get('price') as string),
-            color: formData.get('color') as string,
-          };
-          handleCreatePog(pog);
-          (e.target as HTMLFormElement).reset();
-        }}
-      >
-        <label>
-          Name:
-          <input type="text" name="name" />
-        </label>
-        <label>
-          Ticker Symbol:
-          <input type="text" name="ticker_symbol" />
-        </label>
-        <label>
-          Price:
-          <input type="number" name="price" />
-        </label>
-        <label>
-          Color:
-          <input type="text" name="color" />
-        </label>
-        <button type="submit">Create Pog</button>
-      </form>
+    <div className="flex flex-col items-center justify-center h-screen">
+      <div className="font-bold text-xl py-4">
+        <h1>WELCOME TO POGSCHAMP</h1>
+      </div>
+      <div className=" bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full max-w-md">
+        <h2 className="text-2xl font-bold mb-4">Login</h2>
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <label
+              className="block text-gray-700 font-bold mb-2"
+              htmlFor="email"
+            >
+              Email
+            </label>
+            <input
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline"
+              id="email"
+              type="email"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+          <div className="mb-6">
+            <label
+              className="block text-gray-700 font-bold mb-2"
+              htmlFor="password"
+            >
+              Password
+            </label>
+            <input
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+              id="password"
+              type="password"
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+          <div className="flex items-center justify-between">
+            <Button
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              type="submit"
+            >
+              <Link href="/pages/Home">Sign In</Link>
+            </Button>
+          </div>
+        </form>
+      </div>
     </div>
   );
-};
-
-export default Home;
+}
