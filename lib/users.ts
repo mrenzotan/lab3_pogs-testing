@@ -1,4 +1,4 @@
-import initDatabase from '../db/database';
+import initDatabase from '@/db/database';
 
 const db = initDatabase();
 
