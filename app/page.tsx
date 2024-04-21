@@ -56,6 +56,7 @@ const Home = () => {
 
   return (
     <div>
+      <a href="/api/auth/login">Login</a>
       <h1>PogsChamp</h1>
       <h2>Pogs</h2>
       <ul>
