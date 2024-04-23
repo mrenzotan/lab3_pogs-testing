@@ -1,23 +1,24 @@
-'use client';
-import { useState, useEffect } from 'react';
-import { Pog, User } from '@/lib/types';
+'use client'
+import { useState, useEffect } from 'react'
+import { Pog, User } from '@/lib/types'
+import Link from 'next/link'
 
 const Home = () => {
-  const [pogs, setPogs] = useState<Pog[]>([]);
-  const [users, setUsers] = useState<User[]>([]);
+  const [pogs, setPogs] = useState<Pog[]>([])
+  const [users, setUsers] = useState<User[]>([])
 
   useEffect(() => {
     const fetchData = async () => {
-      const pogResponse = await fetch('/api/pogs');
-      const pogData = await pogResponse.json();
-      setPogs(pogData);
+      const pogResponse = await fetch('/api/pogs')
+      const pogData = await pogResponse.json()
+      setPogs(pogData)
 
-      const userResponse = await fetch('/api/users');
-      const userData = await userResponse.json();
-      setUsers(userData);
-    };
-    fetchData();
-  }, []);
+      const userResponse = await fetch('/api/users')
+      const userData = await userResponse.json()
+      setUsers(userData)
+    }
+    fetchData()
+  }, [])
 
   const handleCreatePog = async (pog: Pog) => {
     const response = await fetch('/api/pogs', {
@@ -26,10 +27,10 @@ const Home = () => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(pog),
-    });
-    const data = await response.json();
-    setPogs([...pogs, data]);
-  };
+    })
+    const data = await response.json()
+    setPogs([...pogs, data])
+  }
 
   const handleUpdatePog = async (pog: Pog) => {
     const response = await fetch(`/api/pogs?id=${pog.id}`, {
@@ -38,25 +39,25 @@ const Home = () => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(pog),
-    });
-    const data = await response.json();
-    setPogs(pogs.map((p) => (p.id === data.id ? data : p)));
-  };
+    })
+    const data = await response.json()
+    setPogs(pogs.map((p) => (p.id === data.id ? data : p)))
+  }
 
   const handleDeletePog = async (id: number | undefined) => {
     if (typeof id === 'number') {
       await fetch(`/api/pogs?id=${id}`, {
         method: 'DELETE',
-      });
-      setPogs(pogs.filter((p) => p.id !== id));
+      })
+      setPogs(pogs.filter((p) => p.id !== id))
     } else {
-      console.error('Invalid pog ID');
+      console.error('Invalid pog ID')
     }
-  };
+  }
 
   return (
     <div>
-      <a href="/api/auth/login">Login</a>
+      <Link href="/api/auth/login">Login</Link>
       <h1>PogsChamp</h1>
       <h2>Pogs</h2>
       <ul>
@@ -80,16 +81,16 @@ const Home = () => {
       <h2>Create Pog</h2>
       <form
         onSubmit={(e) => {
-          e.preventDefault();
-          const formData = new FormData(e.target as HTMLFormElement);
+          e.preventDefault()
+          const formData = new FormData(e.target as HTMLFormElement)
           const pog: Pog = {
             name: formData.get('name') as string,
             ticker_symbol: formData.get('ticker_symbol') as string,
             price: parseFloat(formData.get('price') as string),
             color: formData.get('color') as string,
-          };
-          handleCreatePog(pog);
-          (e.target as HTMLFormElement).reset();
+          }
+          handleCreatePog(pog)
+          ;(e.target as HTMLFormElement).reset()
         }}
       >
         <label>
@@ -111,7 +112,7 @@ const Home = () => {
         <button type="submit">Create Pog</button>
       </form>
     </div>
-  );
-};
+  )
+}
 
-export default Home;
+export default Home
