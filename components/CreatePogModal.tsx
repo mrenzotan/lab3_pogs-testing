@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
+
 import { Pog } from '@/lib/types';
 import { Button } from './ui/button';
 
-interface CreatePogModalProps {
-  onClose: () => void;
-  onSubmit: (pog: Pog) => void;
-}
+import { CreatePogModalProps } from '@/lib/types';
 
 export const CreatePogModal: React.FC<CreatePogModalProps> = ({
   onClose,
@@ -105,3 +103,5 @@ export const CreatePogModal: React.FC<CreatePogModalProps> = ({
     </div>
   );
 };
+
+export default CreatePogModal;

@@ -60,7 +60,7 @@ export default function LoginPage() {
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
               type="submit"
             >
-              <Link href="/pages/Home">Sign In</Link>
+              <Link href="/admin">Sign In</Link>
             </Button>
           </div>
         </form>
