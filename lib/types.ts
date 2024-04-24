@@ -41,4 +41,5 @@ export type User = {
   email: string;
   isAdmin: boolean;
   balance: number;
+  ownedPogs: number[];
 };
