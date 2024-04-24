@@ -3,14 +3,6 @@ import { Pog } from './types';
 
 const db = initDatabase();
 
-export const readPogs = () => {
-  return db.prepare('SELECT * FROM pogs').all();
-};
-
-export const readPog = (id: number): Pog => {
-  return db.prepare('SELECT * FROM pogs WHERE id = ?').get(id) as Pog;
-};
-
 export const createPog = (pog: Pog) => {
   const { name, ticker_symbol, price, color } = pog;
   const stmt = db.prepare(
@@ -18,6 +10,14 @@ export const createPog = (pog: Pog) => {
   );
   const info = stmt.run(name, ticker_symbol, price, color);
   return { id: info.lastInsertRowid, name, ticker_symbol, price, color };
+};
+
+export const readPogs = () => {
+  return db.prepare('SELECT * FROM pogs').all();
+};
+
+export const readSpecificPog = (id: number): Pog => {
+  return db.prepare('SELECT * FROM pogs WHERE id = ?').get(id) as Pog;
 };
 
 export const updatePog = (pog: Pog) => {

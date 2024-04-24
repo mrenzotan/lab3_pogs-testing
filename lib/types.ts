@@ -3,7 +3,6 @@ export type Pog = {
   name: string;
   ticker_symbol: string;
   price: number;
-  owners: number[];
   color: string;
 };
 
@@ -13,4 +12,5 @@ export type User = {
   email: string;
   isAdmin: boolean;
   balance: number;
+  ownedPogs: number[];
 };
