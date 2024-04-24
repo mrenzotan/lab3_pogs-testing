@@ -4,32 +4,32 @@ import {
   updateUserBalance,
   updateUserPogs
 } from '@/lib/users';
-import { readSpecificPog, updatePog } from '@/lib/pogs';
+import { readSpecificPog } from '@/lib/pogs';
 import { useUser } from '@auth0/nextjs-auth0/client';
-import { User } from '@/lib/types';
 
 export async function POST(request: Request) {
   const body = await request.json();
-  const { pogId, amount } = body;
+  const { pogID, amount } = body;
+
+  // Check for user auth
   const { user } = useUser();
-  const userId = user?.sub;
-  if (!userId) {
+  const userID = user?.sub;
+  if (!userID) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
   try {
-    const user = await readSpecificUser(parseInt(userId)) as User;
-    const pog = await readSpecificPog(pogId);
+    const user = await readSpecificUser(userID);
+    const pog = await readSpecificPog(pogID);
     if (!user || !pog) {
       throw new Error('User or Pog not found');
     }
 
     const newBalance = user.balance + amount * pog.price;
-    user.balance = newBalance;
-    await updateUserBalance(user);
 
-    user.ownedPogs = user.ownedPogs.filter(id => id !== pogId);
-    await updateUserPogs(user);
+    await updateUserBalance(user, newBalance);
+
+    await updateUserPogs(user, pogID, "sell");
 
     return NextResponse.json({ message: 'Pog sold successfully' });
   } catch (error) {
