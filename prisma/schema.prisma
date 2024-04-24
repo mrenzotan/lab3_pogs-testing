@@ -11,7 +11,7 @@ datasource db {
 }
 
 // Define the Pog model
-model Pog {
+model Pogs {
   id      Int      @id @default(autoincrement())
   name    String
   ticker_symbol String @unique
@@ -20,7 +20,7 @@ model Pog {
 }
 
 // Define the User model
-model User {
+model Users {
   id           String      @id
   name         String
   email        String   @unique
