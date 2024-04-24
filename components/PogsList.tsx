@@ -6,6 +6,7 @@ const PogsList: React.FC<PogsListProps> = ({
   pogs,
   onDeletePog,
   onEditPog,
+  onGeneratePriceChange,
 }) => {
   return (
     <div>
@@ -15,6 +16,7 @@ const PogsList: React.FC<PogsListProps> = ({
           pog={pog}
           onDeletePog={onDeletePog}
           onEditPog={onEditPog}
+          onGeneratePriceChange={onGeneratePriceChange}
         />
       ))}
     </div>

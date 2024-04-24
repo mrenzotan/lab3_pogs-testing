@@ -67,22 +67,6 @@ export const UpdatePogModal: React.FC<UpdatePogModalProps> = ({
             </div>
             <div className="mb-4">
               <label
-                htmlFor="price"
-                className="block text-gray-700 font-bold mb-2"
-              >
-                Price
-              </label>
-              <input
-                type="number"
-                id="price"
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                placeholder="Enter price"
-                value={price}
-                onChange={(e) => setPrice(parseFloat(e.target.value))}
-              />
-            </div>
-            <div className="mb-4">
-              <label
                 htmlFor="color"
                 className="block text-gray-700 font-bold mb-2"
               >

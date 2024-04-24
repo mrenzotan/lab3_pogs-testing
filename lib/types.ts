@@ -6,12 +6,14 @@ export interface PogCardProps {
   pog: Pog;
   onDeletePog: (id: number) => void;
   onEditPog: (id: number) => void;
+  onGeneratePriceChange: (id: number, currentPrice: number) => void;
 }
 
 export interface PogsListProps {
   pogs: Pog[];
   onDeletePog: (id: number) => void;
   onEditPog: (id: number) => void;
+  onGeneratePriceChange: (id: number, currentPrice: number) => void;
 }
 
 export interface CreatePogModalProps {

@@ -70,6 +70,33 @@ export default function HomePage() {
     }
   };
 
+  const handleGeneratePriceChange = async (
+    id: number,
+    currentPrice: number
+  ) => {
+    const priceChange = Math.random() * 10 - 5;
+    const newPrice = currentPrice * (1 + priceChange / 100);
+
+    try {
+      const response = await fetch(`api/pogs?id=${id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ price: newPrice }),
+      });
+      if (response.ok) {
+        setPogs(
+          pogs.map((pog) => (pog.id === id ? { ...pog, price: newPrice } : pog))
+        );
+      } else {
+        console.error('Error updating pog price: ', response.status);
+      }
+    } catch (error) {
+      console.error('Error updating pog price: ', error);
+    }
+  };
+
   return (
     <div className="container mx-auto py-8">
       <h1 className="text-3xl font-bold mb-4">PogsChamp</h1>
@@ -78,6 +105,7 @@ export default function HomePage() {
           pogs={pogs}
           onDeletePog={handleDeletePog}
           onEditPog={handleEditPog}
+          onGeneratePriceChange={handleGeneratePriceChange}
         />
       ) : (
         <p className="text-gray- italic">No pogs currently available.</p>
