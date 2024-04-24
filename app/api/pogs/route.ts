@@ -4,7 +4,7 @@ import { useUser } from '@auth0/nextjs-auth0/client';
 import { User } from '@/lib/types';
 
 export async function GET() {
-  const pogs = readPogs();
+  const pogs = await readPogs();
   return NextResponse.json(pogs);
 }
 

@@ -1,10 +1,10 @@
 // import { NextResponse } from 'next/server';
 // import {
-//   readSpecificUser, updateUserBalance, updateUserPogs
+//   createUser,
+//   getUserByEmail,
+//   updateUser,
+//   deleteUser,
 // } from '@/lib/users';
-// import { readSpecificPog, updatePog } from '@/lib/pogs';
-// import { useUser } from '@auth0/nextjs-auth0/client';
-// import { User } from '@/lib/types';
 
 // export async function GET(request: Request) {
 //   const url = new URL(request.url);

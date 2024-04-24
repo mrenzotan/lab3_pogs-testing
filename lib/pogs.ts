@@ -1,35 +1,37 @@
-import initDatabase from '@/db/database';
-import { Pog } from './types';
-
-const db = initDatabase();
-
-export const createPog = (pog: Pog) => {
-  const { name, ticker_symbol, price, color } = pog;
-  const stmt = db.prepare(
-    'INSERT INTO pogs (name, ticker_symbol, price, color) VALUES (?, ?, ?, ?)'
-  );
-  const info = stmt.run(name, ticker_symbol, price, color);
-  return { id: info.lastInsertRowid, name, ticker_symbol, price, color };
-};
+import prisma from '@/lib/prisma';
 
 export const readPogs = () => {
   return db.prepare('SELECT * FROM pogs').all();
 };
 
-export const readSpecificPog = (id: number): Pog => {
-  return db.prepare('SELECT * FROM pogs WHERE id = ?').get(id) as Pog;
+export const createPog = (pog: {
+  name: string;
+  ticker_symbol: string;
+  price: number;
+  color: string;
+}) => {
+  const { name, ticker_symbol, price, color } = pog;
+  const createdPog = await prisma.pog.create({
+    data: { name, ticker_symbol, price, color },
+  });
+  return createPog;
 };
 
-export const updatePog = (pog: Pog) => {
+export const updatePog = async (pog: {
+  id: number;
+  name: string;
+  ticker_symbol: string;
+  price: number;
+  color: string;
+}) => {
   const { id, name, ticker_symbol, price, color } = pog;
-  const stmt = db.prepare(
-    'UPDATE pogs SET name = ?, ticker_symbol = ?, price = ?, color = ? WHERE id = ?'
-  );
-  stmt.run(name, ticker_symbol, price, color, id);
-  return pog;
+  const updatedPog = await prisma.pog.update({
+    where: { id },
+    data: { name, ticker_symbol, price, color },
+  });
+  return updatedPog;
 };
 
-export const deletePog = (id: number) => {
-  const stmt = db.prepare('DELETE FROM pogs WHERE id = ?');
-  stmt.run(id);
+export const deletePog = async (id: number) => {
+  await prisma.pog.delete({ where: { id } });
 };
