@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { readPogs, createPog, updatePog, deletePog } from '@/lib/pogs';
 
 export async function GET() {
-  const pogs = readPogs();
+  const pogs = await readPogs();
   return NextResponse.json(pogs);
 }
 
