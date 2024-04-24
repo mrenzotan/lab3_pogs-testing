@@ -36,7 +36,7 @@ export type Pog = {
 };
 
 export type User = {
-  id: number;
+  id: string;
   name: string;
   email: string;
   isAdmin: boolean;

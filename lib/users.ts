@@ -1,43 +1,44 @@
 import prisma from '@/lib/prisma';
 
-// export const createUser = async (user: {
-//   name: string;
-//   email: string;
-//   isAdmin?: boolean;
-//   balance?: number;
-// }) => {
-//   const { name, email, isAdmin = false, balance = 0 } = user;
-//   const createdUser = await prisma.user.create({
-//     data: { name, email, isAdmin, balance },
-//   });
-//   return createdUser;
-// };
+export const readUser = async () => {
+  return await prisma.user.findMany()
+}
 
-// export const getUserByEmail = (email: string) => {
-//   const stmt = db.prepare('SELECT * FROM users WHERE email = ?');
-//   return stmt.get(email);
-// };
+export const readSpecificUser = async (id: string) => {
+  return await prisma.user.findUnique({
+    where: { id: id }
+  })
+}
 
-// export const updateUser = (user: {
-//   id: number;
-//   name: string;
-//   email: string;
-//   password: string;
-//   isAdmin: boolean;
-//   balance: number;
-// }) => {
-//   const { id, name, email, password, isAdmin, balance } = user;
-//   const stmt = db.prepare(
-//     'UPDATE users SET name = ?, email = ?, password = ?, is_admin = ?, balance = ? WHERE id = ?'
-//   );
-//   stmt.run(name, email, password, isAdmin, balance, id);
-//   return user;
-// };
+export const updateUserBalance = async (id: string, newBalance: number) => {
+  try {
+    const updatedBalance = await prisma.user.update({
+      where: { id },
+      data: { balance: newBalance },
+    })
+    return updatedBalance
+  } catch (error) {
+    console.error('Error updating user balance:', error)
+    throw error
+  }
+}
 
-// export const deleteUser = (id: number) => {
-//   const stmt = db.prepare('DELETE FROM users WHERE id = ?');
-//   stmt.run(id);
-// };
+export const updateUserPogs = async (id: string, pogID: number, operation: 'buy' | 'sell') => {
+  try {
+    const updatedPogs = await prisma.user.update({
+      where: { id },
+      data: {
+        ownedPogs: operation === 'buy'
+          ? { push: pogID }
+          : { filter: { id: { notIn: [pogID] } } }
+      },
+    })
+    return updatedPogs
+  } catch (error) {
+    console.error('Error updating user pogs:', error)
+    throw error
+  }
+}
 
 export const readUser = (id: number) => {
   return db.prepare('SELECT * FROM users WHERE id = ?').get(id);
