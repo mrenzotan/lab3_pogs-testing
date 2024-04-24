@@ -1,41 +1,23 @@
-// import { NextResponse } from 'next/server';
-// import {
-//   createUser,
-//   getUserByEmail,
-//   updateUser,
-//   deleteUser,
-// } from '@/lib/users';
+import { getSession } from "@auth0/nextjs-auth0";
+import { NextRequest, NextResponse } from "next/server";
+import { createUser, existingUser } from "@/lib/users";
 
-// export async function GET(request: Request) {
-//   const url = new URL(request.url);
-//   const email = url.searchParams.get('email');
-//   const users = email ? await getUserByEmail(email) : await getUserByEmail('');
-//   return NextResponse.json(users);
-// }
+export async function POST(request: NextRequest, response: NextResponse) {
+  const session = await getSession(request, response)
 
-// export async function POST(request: Request) {
-//   const body = await request.json();
-//   const user = await createUser(body);
-//   return NextResponse.json(user);
-// }
+  if (!session) {
+    return NextResponse.json({ error: 'Not authenticated' }, { status: 401 })
+  }
 
-// export async function PUT(request: Request) {
-//   const url = new URL(request.url);
-//   const id = url.searchParams.get('id');
-//   if (!id) {
-//     return NextResponse.json({ error: 'Missing user ID' }, { status: 400 });
-//   }
-//   const body = await request.json();
-//   const updatedUser = await updateUser({ id: parseInt(id), ...body });
-//   return NextResponse.json(updatedUser);
-// }
+  const userID = session.user.sub
+  const userName = session.user.name
+  const userEmail = session.user.email
 
-// export async function DELETE(request: Request) {
-//   const url = new URL(request.url);
-//   const id = url.searchParams.get('id');
-//   if (!id) {
-//     return NextResponse.json({ error: 'Missing user ID' }, { status: 400 });
-//   }
-//   await deleteUser(parseInt(id));
-//   return NextResponse.json({ message: 'User deleted' });
-// }
+  if (await existingUser(userID)) {
+    return NextResponse.json({ message: "User already exists in the database" }, { status: 200 })
+  }
+
+  await createUser(userID, userName, userEmail)
+
+  return NextResponse.json({ message: 'User successfully saved into the database' }, { status: 200 })
+}
