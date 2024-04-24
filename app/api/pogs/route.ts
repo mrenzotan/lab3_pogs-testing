@@ -5,6 +5,7 @@ import {
   createPog,
   updatePog,
   deletePog,
+  readSpecificPog
 } from '@/lib/pogs';
 
 export async function GET(request: Request) {
@@ -44,69 +45,4 @@ export async function DELETE(request: Request) {
   await deletePog(parseInt(id));
   console.log(`Pog deleted: ${id}`);
   return NextResponse.json({ message: 'Pog deleted' });
-}
-
-// New API endpoints for buying and selling Pogs
-export async function POST_buy(request: Request) {
-  const body = await request.json();
-  const { pogId, amount } = body;
-  const { user } = useUser()
-  const userId = user?.sub;
-  if (!userId) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
-
-  try {
-    const user: User = await readUser(parseInt(userId)) as User;
-    const pog = await readPog(pogId);
-    if (!user || !pog) {
-      throw new Error('User or Pog not found');
-    }
-
-    const newBalance = user.balance - amount * pog.price;
-    if (newBalance < 0) {
-      throw new Error('Insufficient balance');
-    }
-
-    user.balance = newBalance;
-    await updateUser(user);
-
-    pog.owners.push(parseInt(userId));
-    await updatePog(pog);
-
-    return NextResponse.json({ message: 'Pog bought successfully' });
-  } catch (error) {
-    console.error(error);
-    return NextResponse.json({ error: 'Failed to buy Pog' }, { status: 500 });
-  }
-}
-
-export async function POST_sell(request: Request) {
-  const body = await request.json();
-  const { pogId, amount } = body;
-  const { user } = useUser()
-  const userId = user?.sub;
-  if (!userId) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
-
-  try {
-    const user = await readUser(parseInt(userId)) as User;
-    const pog = await readPog(pogId);
-    if (!user || !pog) {
-      throw new Error('User or Pog not found');
-    }
-
-    const newBalance = user.balance + amount * pog.price;
-    user.balance = newBalance;
-    await updateUser(user);
-
-    pog.owners = pog.owners.filter(ownerId => ownerId.toString() !== userId);
-    await updatePog(pog);
-
-    return NextResponse.json({ message: 'Pog sold successfully' });
-  } catch (error) {
-    console.error(error);
-    return NextResponse.json({ error: 'Failed to sell Pog' }, { status: 500 });
-  }
 }

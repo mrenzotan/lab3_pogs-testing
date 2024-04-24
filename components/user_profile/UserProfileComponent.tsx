@@ -18,6 +18,23 @@ const UserProfileComponent = () => {
     }
   }, [isLoading, user, error, router])
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('/api/user')
+        if (!response.ok) {
+          throw new Error('Failed to fetch user data')
+        }
+        const userData = await response.json()
+        console.log('User data:', userData)
+      } catch (error) {
+        console.error('Error fetching user data:', error)
+      }
+    }
+
+    fetchData()
+  }, [user])
+
   if (loading) {
     return <div>Loading...</div>
   }
@@ -36,8 +53,7 @@ const UserProfileComponent = () => {
         className="rounded-full object-cover"
       />
       <div>{user?.name}</div>
-      {/* Display e-wallet amount */}
-      <div>Money:</div>
+      <div>Balance:</div>
     </div>
   )
 }
