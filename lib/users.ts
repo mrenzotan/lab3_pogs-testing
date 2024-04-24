@@ -1,4 +1,21 @@
 import prisma from '@/lib/prisma';
+import { getSession } from '@auth0/nextjs-auth0';
+
+export const createUser = async (userID: string, userName: string, userEmail: string) => {
+  return await prisma.user.create({
+    data: {
+      id: userID,
+      name: userName,
+      email: userEmail,
+    }
+  })
+}
+
+export const existingUser = async (userID: string) => {
+  return await prisma.user.findUnique({
+    where: { id: userID }
+  })
+}
 
 export const readUser = async () => {
   return await prisma.user.findMany()
