@@ -25,11 +25,17 @@ const Navbar = () => {
               alt={user?.name || ''}
               width={48}
               height={48}
-              className="rounded-full border border-gray-100"
+              className="rounded-full"
             />
           </button>
           {showDropdown && (
             <div className="mt-2 w-full bg-white border border-gray-200 rounded shadow-lg">
+              <Link
+                href="/user_profile"
+                className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              >
+                Your profile
+              </Link>
               <Link
                 href="/api/auth/logout"
                 className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
