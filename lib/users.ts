@@ -38,3 +38,14 @@ import prisma from '@/lib/prisma';
 //   const stmt = db.prepare('DELETE FROM users WHERE id = ?');
 //   stmt.run(id);
 // };
+
+export const readUser = (id: number) => {
+  return db.prepare('SELECT * FROM users WHERE id = ?').get(id);
+};
+
+export const updateUserBalance = (user: User) => {
+  const { id, balance } = user;
+  const stmt = db.prepare('UPDATE users SET balance = ? WHERE id = ?');
+  stmt.run(balance, id);
+  return user;
+};
