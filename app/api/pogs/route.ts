@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import {
   readPogs,
   readPogsByTickerSymbol,
@@ -19,7 +19,7 @@ export async function GET(request: Request) {
   return NextResponse.json(pogs);
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   const body = await request.json();
   const pog = await createPog(body);
   return NextResponse.json(pog);
@@ -36,7 +36,7 @@ export async function PATCH(request: Request) {
   return NextResponse.json(updatedPog);
 }
 
-export async function DELETE(request: Request) {
+export async function DELETE(request: NextRequest) {
   const url = new URL(request.url);
   const id = url.searchParams.get('id');
   if (!id) {
