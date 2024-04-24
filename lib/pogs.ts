@@ -5,6 +5,14 @@ export const readPogs = async () => {
   return await prisma.pogs.findMany();
 };
 
+export const readSpecificPog = async (id: number) => {
+  return await prisma.pog.findUnique({
+    where: {
+      id: id
+    }
+  })
+}
+
 export const readPogsByTickerSymbol = async (tickerSymbol: string) => {
   return await prisma.pogs.findMany({ where: { ticker_symbol: tickerSymbol } });
 };
