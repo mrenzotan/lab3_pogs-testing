@@ -12,7 +12,7 @@ export async function POST(request: Request) {
   return NextResponse.json(pog);
 }
 
-export async function PUT(request: Request) {
+export async function PATCH(request: Request) {
   const url = new URL(request.url);
   const id = url.searchParams.get('id');
   if (!id) {
@@ -30,5 +30,6 @@ export async function DELETE(request: Request) {
     return NextResponse.json({ error: 'Missing pog ID' }, { status: 400 });
   }
   await deletePog(parseInt(id));
+  console.log(`Pog deleted: ${id}`);
   return NextResponse.json({ message: 'Pog deleted' });
 }
