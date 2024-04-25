@@ -37,7 +37,7 @@ const PogCard: React.FC<PogCardProps> = ({
         <Button
           className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 m-2 rounded focus:outline-none focus:shadow-outline"
           onClick={() => {
-            console.log('Delete button clicked: ', pog.id);
+            // console.log('Delete button clicked: ', pog.id);
             pog.id && onDeletePog(pog.id);
           }}
         >
