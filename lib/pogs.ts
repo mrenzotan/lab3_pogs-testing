@@ -6,17 +6,22 @@ export const readPogs = async () => {
 };
 
 export const readSpecificPog = async (id: number) => {
-  return await prisma.pogs.findUnique({
-    where: {
-      id: id
-    }
-  })
+  try {
+    return await prisma.pogs.findUnique({
+      where: {
+        id: id
+      }
+    })
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
 }
 
 export const createPog = async (pog: Pog) => {
   const { name, ticker_symbol, price, color } = pog;
   const createdPog = await prisma.pogs.create({
-    data: { name, ticker_symbol, price, color },
+    data: { name, ticker_symbol, price: price as number, color },
   });
   return createdPog;
 };

@@ -1,37 +1,37 @@
 import prisma from '@/lib/prisma';
 
 export const createUser = async (userID: string, userName: string, userEmail: string) => {
-  return await prisma.user.create({
+  return await prisma.users.create({
     data: {
       id: userID,
       name: userName,
       email: userEmail,
       isAdmin: false,
-      balance: 0,
+      balance: 10000,
       ownedPogs: []
     }
   })
 }
 
 export const existingUser = async (userID: string) => {
-  return await prisma.user.findUnique({
+  return await prisma.users.findUnique({
     where: { id: userID }
   })
 }
 
 export const readUser = async () => {
-  return await prisma.user.findMany()
+  return await prisma.users.findMany()
 }
 
 export const readSpecificUser = async (id: string) => {
-  return await prisma.user.findUnique({
+  return await prisma.users.findUnique({
     where: { id: id }
   })
 }
 
 export const updateUserBalance = async (id: string, newBalance: number) => {
   try {
-    const updatedBalance = await prisma.user.update({
+    const updatedBalance = await prisma.users.update({
       where: { id },
       data: { balance: newBalance },
     })
@@ -44,7 +44,7 @@ export const updateUserBalance = async (id: string, newBalance: number) => {
 
 export const updateUserPogs = async (id: string, pogID: number, operation: 'buy' | 'sell') => {
   try {
-    const user = await prisma.user.findUnique({ where: { id } });
+    const user = await prisma.users.findUnique({ where: { id } });
     if (!user) {
       throw new Error(`User with id ${id} not found`);
     }
@@ -56,7 +56,7 @@ export const updateUserPogs = async (id: string, pogID: number, operation: 'buy'
       updatedOwnedPogs = user.ownedPogs.filter((pog) => pog !== pogID);
     }
 
-    const updatedUser = await prisma.user.update({
+    const updatedUser = await prisma.users.update({
       where: { id },
       data: { ownedPogs: updatedOwnedPogs },
     });

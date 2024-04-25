@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import Image from 'next/image'
 import { useUser } from '@auth0/nextjs-auth0/client'
 import ButtonLink from '../ButtonLink'
@@ -9,6 +9,40 @@ const Hero = () => {
   const { user } = useUser()
 
   const isLoggedIn = user !== undefined && user !== null
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (isLoggedIn) {
+        try {
+          const response = await fetch('/api/users', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              userId: user.sub,
+              userName: user.name,
+              userEmail: user.email,
+            }),
+          })
+
+          if (!response.ok) {
+            throw new Error(`HTTP error status: ${response.status}`)
+          }
+
+          try {
+            const data = await response.json()
+            console.log(data)
+          } catch (error) {
+            console.error('Error parsing JSON:', error)
+          }
+        } catch (error) {
+          console.error('Error fetching data:', error)
+        }
+      }
+    }
+    fetchData()
+  }, [isLoggedIn, user])
 
   return (
     <div className="p-2 flex flex-col sm:flex-row justify-start items-center w-full h-full">
