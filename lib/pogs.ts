@@ -6,7 +6,7 @@ export const readPogs = async () => {
 };
 
 export const readSpecificPog = async (id: number) => {
-  return await prisma.pog.findUnique({
+  return await prisma.pogs.findUnique({
     where: {
       id: id
     }
