@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
   return NextResponse.json(pog);
 }
 
-export async function PATCH(request: Request) {
+export async function PATCH(request: NextRequest) {
   const url = new URL(request.url);
   const id = url.searchParams.get('id');
   if (!id) {
