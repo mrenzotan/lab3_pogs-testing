@@ -1,5 +1,4 @@
 import prisma from '@/lib/prisma';
-import { getSession } from '@auth0/nextjs-auth0';
 
 export const createUser = async (userID: string, userName: string, userEmail: string) => {
   return await prisma.user.create({
@@ -7,6 +6,9 @@ export const createUser = async (userID: string, userName: string, userEmail: st
       id: userID,
       name: userName,
       email: userEmail,
+      isAdmin: false,
+      balance: 0,
+      ownedPogs: []
     }
   })
 }
