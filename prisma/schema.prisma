@@ -10,7 +10,7 @@ datasource db {
   directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
 
-// Define the Pog model
+// Define the Pogs model
 model Pogs {
   id      Int      @id @default(autoincrement())
   name    String
