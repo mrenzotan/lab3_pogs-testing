@@ -13,8 +13,14 @@ export const CreatePogModal: React.FC<CreatePogModalProps> = ({
   const [tickerSymbol, setTickerSymbol] = useState('');
   const [price, setPrice] = useState(0);
   const [color, setColor] = useState('#000000');
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = () => {
+    if (!name || !tickerSymbol || price <= 0) {
+      setError('Please fill up all fields.');
+      return;
+    }
+
     const newPog: Pog = {
       name,
       ticker_symbol: tickerSymbol,
@@ -22,6 +28,15 @@ export const CreatePogModal: React.FC<CreatePogModalProps> = ({
       color,
     };
     onSubmit(newPog);
+  };
+
+  const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseFloat(e.target.value);
+    if (value <= 0) {
+      setError('Price must be a positive number.');
+      return;
+    }
+    setPrice(value);
   };
 
   return (
@@ -74,7 +89,7 @@ export const CreatePogModal: React.FC<CreatePogModalProps> = ({
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               placeholder="Enter price"
               value={price}
-              onChange={(e) => setPrice(parseFloat(e.target.value))}
+              onChange={handlePriceChange}
             />
           </div>
           <div className="mb-4">
@@ -92,6 +107,7 @@ export const CreatePogModal: React.FC<CreatePogModalProps> = ({
               onChange={(e) => setColor(e.target.value)}
             />
           </div>
+          {error && <div className="text-red-500 text-sm mb-2">{error}</div>}
           <div className="flex justify-end">
             <Button onClick={onClose} className="mr-2">
               Cancel

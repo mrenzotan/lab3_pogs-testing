@@ -12,16 +12,21 @@ export const UpdatePogModal: React.FC<UpdatePogModalProps> = ({
 }) => {
   const [name, setName] = useState(pog.name);
   const [tickerSymbol, setTickerSymbol] = useState(pog.ticker_symbol);
-  const [price, setPrice] = useState(pog.price);
   const [color, setColor] = useState(pog.color);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    if (!name || !tickerSymbol) {
+      setError('Please fill up all fields.');
+      return;
+    }
+
     const updatedPog: Pog = {
       id: pog.id,
       name,
       ticker_symbol: tickerSymbol,
-      price,
       color,
     };
     onSubmit(updatedPog);
@@ -80,6 +85,7 @@ export const UpdatePogModal: React.FC<UpdatePogModalProps> = ({
                 onChange={(e) => setColor(e.target.value)}
               />
             </div>
+            {error && <div className="text-red-500 text-sm mb-2">{error}</div>}
             <div className="flex justify-end">
               <Button onClick={onClose} className="mr-2">
                 Cancel
