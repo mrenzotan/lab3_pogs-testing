@@ -1,5 +1,4 @@
 import prisma from '@/lib/prisma';
-import { getSession } from '@auth0/nextjs-auth0';
 
 export const createUser = async (userID: string, userName: string, userEmail: string) => {
   return await prisma.user.create({
@@ -7,6 +6,9 @@ export const createUser = async (userID: string, userName: string, userEmail: st
       id: userID,
       name: userName,
       email: userEmail,
+      isAdmin: false,
+      balance: 0,
+      ownedPogs: []
     }
   })
 }
@@ -42,49 +44,26 @@ export const updateUserBalance = async (id: string, newBalance: number) => {
 
 export const updateUserPogs = async (id: string, pogID: number, operation: 'buy' | 'sell') => {
   try {
-    const updatedPogs = await prisma.user.update({
+    const user = await prisma.user.findUnique({ where: { id } });
+    if (!user) {
+      throw new Error(`User with id ${id} not found`);
+    }
+
+    let updatedOwnedPogs: number[];
+    if (operation === 'buy') {
+      updatedOwnedPogs = [...user.ownedPogs, pogID];
+    } else {
+      updatedOwnedPogs = user.ownedPogs.filter((pog) => pog !== pogID);
+    }
+
+    const updatedUser = await prisma.user.update({
       where: { id },
-      data: {
-        ownedPogs: operation === 'buy'
-          ? { push: pogID }
-          : { filter: { id: { notIn: [pogID] } } }
-      },
-    })
-    return updatedPogs
+      data: { ownedPogs: updatedOwnedPogs },
+    });
+
+    return updatedUser;
   } catch (error) {
-    console.error('Error updating user pogs:', error)
-    throw error
+    console.error('Error updating user pogs:', error);
+    throw error;
   }
 }
-
-export const readUser = (id: number) => {
-  return db.prepare('SELECT * FROM users WHERE id = ?').get(id);
-};
-
-// export const updateUser = (user: User) => {
-//   const { id, name, email, isAdmin, balance } = user;
-//   const stmt = db.prepare(
-//     'UPDATE users SET name = ?, email = ?, is_admin = ?, balance = ? WHERE id = ?'
-//   );
-//   stmt.run(name, email, isAdmin, balance, id);
-//   return user;
-// };
-
-// export const deleteUser = (id: number) => {
-//   const stmt = db.prepare('DELETE FROM users WHERE id = ?');
-//   stmt.run(id);
-// };
-
-export const updateUserBalance = (user: User) => {
-  const { id, balance } = user;
-  const stmt = db.prepare('UPDATE users SET balance = ? WHERE id = ?');
-  stmt.run(balance, id);
-  return user;
-};
-
-export const updateUserPogs = (user: User) => {
-  const { id, ownedPogs } = user;
-  const stmt = db.prepare('UPDATE users SET ownedPogs = ? WHERE id = ?');
-  stmt.run(ownedPogs, id);
-  return user;
-};
