@@ -31,7 +31,7 @@ export type Pog = {
   id?: number;
   name: string;
   ticker_symbol: string;
-  price?: number;
+  price: number;
   color: string;
 };
 

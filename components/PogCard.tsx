@@ -16,7 +16,7 @@ const PogCard: React.FC<PogCardProps> = ({
     >
       <h2 className="text-xl font-bold">{pog.name}</h2>
       <p>{pog.ticker_symbol}</p>
-      <p>Price: ₱{pog.price!.toFixed(2)}</p>
+      <p>Price: ₱{pog.price && pog.price!.toFixed(2)}</p>
       <div
         className="w-10 h-10 rounded-full"
         style={{ backgroundColor: pog.color }}
@@ -37,7 +37,7 @@ const PogCard: React.FC<PogCardProps> = ({
         <Button
           className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 m-2 rounded focus:outline-none focus:shadow-outline"
           onClick={() => {
-            console.log('Delete button clicked: ', pog.id);
+            // console.log('Delete button clicked: ', pog.id);
             pog.id && onDeletePog(pog.id);
           }}
         >

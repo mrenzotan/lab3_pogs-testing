@@ -12,6 +12,7 @@ export const UpdatePogModal: React.FC<UpdatePogModalProps> = ({
 }) => {
   const [name, setName] = useState(pog.name);
   const [tickerSymbol, setTickerSymbol] = useState(pog.ticker_symbol);
+  const [price, setPrice] = useState(pog.price);
   const [color, setColor] = useState(pog.color);
   const [error, setError] = useState<string | null>(null);
 
@@ -23,13 +24,24 @@ export const UpdatePogModal: React.FC<UpdatePogModalProps> = ({
       return;
     }
 
-    const updatedPog: Pog = {
-      id: pog.id,
-      name,
-      ticker_symbol: tickerSymbol,
-      color,
-    };
-    onSubmit(updatedPog);
+    try {
+      const response = await fetch(`/api/pogs?tickerSymbol=${tickerSymbol}`);
+      const existingPog = await response.json();
+      if (existingPog.length > 0) {
+        setError('Ticker symbol already exists.');
+        return;
+      }
+      const updatedPog: Pog = {
+        id: pog.id,
+        name,
+        ticker_symbol: tickerSymbol,
+        price: price,
+        color,
+      };
+      onSubmit(updatedPog);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
