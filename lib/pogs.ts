@@ -10,27 +10,10 @@ export const readPogsByTickerSymbol = async (tickerSymbol: string) => {
 }
 
 export const readSpecificPog = async (id: number) => {
-  try {
-    return await prisma.pogs.findUnique({
-      where: {
-        id: id,
-      },
-    })
-  } catch (error) {
-    console.error(error)
-    return null
-  }
-}
-
-export const readPogsByTickerSymbol = async (tickerSymbol: string) => {
-  return await prisma.pogs.findMany({ where: { ticker_symbol: tickerSymbol } });
-};
-
-export const readSpecificPog = async (id: number) => {
   return await prisma.pogs.findUnique({
     where: {
-      id: id
-    }
+      id: id,
+    },
   })
 }
 
