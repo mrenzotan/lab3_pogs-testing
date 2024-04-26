@@ -1,34 +1,32 @@
 import prisma from '@/lib/prisma';
+import { Pog } from './types';
 
 export const readPogs = async () => {
   return await prisma.pogs.findMany();
 };
 
-export const createPog = async (pog: {
-  name: string;
-  ticker_symbol: string;
-  price: number;
-  color: string;
-}) => {
+export const readSpecificPog = async (id: number) => {
   try {
-    const { name, ticker_symbol, price, color } = pog;
-    const createdPog = await prisma.pogs.create({
-      data: { name, ticker_symbol, price, color },
-    });
-    return createdPog;
+    return await prisma.pogs.findUnique({
+      where: {
+        id: id
+      }
+    })
   } catch (error) {
-    console.error('Error creating Pog:', error);
-    return { status: 500, json: { error: 'Failed to create Pog' } };
+    console.error(error);
+    return null;
   }
+}
+
+export const createPog = async (pog: Pog) => {
+  const { name, ticker_symbol, price, color } = pog;
+  const createdPog = await prisma.pogs.create({
+    data: { name, ticker_symbol, price: price as number, color },
+  });
+  return createdPog;
 };
 
-export const updatePog = async (pog: {
-  id: number;
-  name: string;
-  ticker_symbol: string;
-  price: number;
-  color: string;
-}) => {
+export const updatePog = async (pog: Pog) => {
   const { id, name, ticker_symbol, price, color } = pog;
   const updatedPog = await prisma.pogs.update({
     where: { id },

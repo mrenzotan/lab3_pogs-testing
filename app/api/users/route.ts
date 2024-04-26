@@ -1,41 +1,23 @@
-// import { NextResponse } from 'next/server';
-// import {
-//   createUser,
-//   getUserByEmail,
-//   updateUser,
-//   deleteUser,
-// } from '@/lib/users';
+import { NextRequest, NextResponse } from "next/server";
+import { createUser, existingUser, readSpecificUser } from "@/lib/users";
 
-// export async function GET(request: Request) {
-//   const url = new URL(request.url);
-//   const email = url.searchParams.get('email');
-//   const users = email ? await getUserByEmail(email) : await getUserByEmail('');
-//   return NextResponse.json(users);
-// }
+export async function POST(request: NextRequest, response: NextResponse) {
+  try {
+    const { userId, userName, userEmail } = await request.json();
 
-// export async function POST(request: Request) {
-//   const body = await request.json();
-//   const user = await createUser(body);
-//   return NextResponse.json(user);
-// }
+    if (!userId || !userName || !userEmail) {
+      return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
+    }
 
-// export async function PUT(request: Request) {
-//   const url = new URL(request.url);
-//   const id = url.searchParams.get('id');
-//   if (!id) {
-//     return NextResponse.json({ error: 'Missing user ID' }, { status: 400 });
-//   }
-//   const body = await request.json();
-//   const updatedUser = await updateUser({ id: parseInt(id), ...body });
-//   return NextResponse.json(updatedUser);
-// }
+    if (await existingUser(userId)) {
+      return NextResponse.json({ message: "User already exists in the database" }, { status: 200 });
+    }
 
-// export async function DELETE(request: Request) {
-//   const url = new URL(request.url);
-//   const id = url.searchParams.get('id');
-//   if (!id) {
-//     return NextResponse.json({ error: 'Missing user ID' }, { status: 400 });
-//   }
-//   await deleteUser(parseInt(id));
-//   return NextResponse.json({ message: 'User deleted' });
-// }
+    await createUser(userId, userName, userEmail);
+
+    return NextResponse.json({ message: 'User successfully created' }, { status: 201 });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+  }
+}
