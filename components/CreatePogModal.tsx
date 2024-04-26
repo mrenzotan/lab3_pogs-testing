@@ -15,19 +15,29 @@ export const CreatePogModal: React.FC<CreatePogModalProps> = ({
   const [color, setColor] = useState('#000000');
   const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!name || !tickerSymbol || price <= 0) {
       setError('Please fill up all fields.');
       return;
     }
 
-    const newPog: Pog = {
-      name,
-      ticker_symbol: tickerSymbol,
-      price,
-      color,
-    };
-    onSubmit(newPog);
+    try {
+      const response = await fetch(`/api/pogs?tickerSymbol=${tickerSymbol}`);
+      const existingPog = await response.json();
+      if (existingPog.length > 0) {
+        setError('Ticker symbol already exists.');
+        return;
+      }
+      const newPog: Pog = {
+        name,
+        ticker_symbol: tickerSymbol,
+        price,
+        color,
+      };
+      onSubmit(newPog);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -24,6 +24,7 @@ export default function HomePage() {
   }, []);
 
   const handleCreatePog = async (pog: Pog) => {
+    console.log('Creating Pog: ', pog);
     const response = await fetch('/api/pogs', {
       method: 'POST',
       headers: {
