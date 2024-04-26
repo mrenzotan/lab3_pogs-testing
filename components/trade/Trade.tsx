@@ -11,7 +11,6 @@ type TradeProps = {
 const Trade: React.FC<TradeProps> = ({ paramsID }) => {
   const [pogs, setPogs] = useState<Pog[]>([])
   const [selectedPog, setSelectedPog] = useState<Pog | null>(null)
-  const [amount, setAmount] = useState(0)
   const [userDB, setUserDB] = useState<User>()
 
   const { user } = useUser()
@@ -102,7 +101,6 @@ const Trade: React.FC<TradeProps> = ({ paramsID }) => {
         if (!response.ok) {
           throw new Error('Failed to buy Pog')
         }
-        setAmount(0)
       } catch (error) {
         console.error('Error buying Pog:', error)
       }
@@ -137,7 +135,6 @@ const Trade: React.FC<TradeProps> = ({ paramsID }) => {
         if (!response.ok) {
           throw new Error('Failed to buy Pog')
         }
-        setAmount(0)
       } catch (error) {
         console.error('Error buying Pog:', error)
       }
