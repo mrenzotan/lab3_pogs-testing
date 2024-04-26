@@ -1,7 +1,19 @@
 import { NextResponse, NextRequest } from 'next/server'
-import { readPogs, createPog, updatePog, deletePog } from '@/lib/pogs'
+import {
+  readPogs,
+  readPogsByTickerSymbol,
+  createPog,
+  updatePog,
+  deletePog,
+} from '@/lib/pogs'
 
-export async function GET() {
+export async function GET(request: Request) {
+  const url = new URL(request.url)
+  const tickerSymbol = url.searchParams.get('tickerSymbol')
+  if (tickerSymbol) {
+    const existingPogs = await readPogsByTickerSymbol(tickerSymbol)
+    return NextResponse.json(existingPogs)
+  }
   const pogs = await readPogs()
   return NextResponse.json(pogs)
 }
