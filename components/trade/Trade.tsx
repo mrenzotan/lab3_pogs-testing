@@ -70,13 +70,17 @@ const Trade: React.FC<TradeProps> = ({ paramsID }) => {
   }, [user])
 
   const handleBuy = async () => {
-    if (amount <= 0 || !selectedPog?.id || !user?.sub) {
-      alert('Please enter a valid amount')
-      return
+    if (!selectedPog?.id || !user?.sub) {
+      throw new Error('Unauthorized Access')
     }
 
-    if (userDB) {
-      const newBalance = userDB?.balance - amount
+    if (userDB && selectedPog.price) {
+      if (userDB.balance < selectedPog.price) {
+        alert('Insufficient funds.')
+        return
+      }
+
+      const newBalance = userDB.balance - selectedPog.price
 
       try {
         const requestBody = {
@@ -90,6 +94,10 @@ const Trade: React.FC<TradeProps> = ({ paramsID }) => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(requestBody),
         })
+
+        if (response.ok) {
+          alert(`Pog bought successfully`)
+        }
 
         if (!response.ok) {
           throw new Error('Failed to buy Pog')
@@ -106,7 +114,11 @@ const Trade: React.FC<TradeProps> = ({ paramsID }) => {
       throw new Error('Unauthorized Access')
     }
 
-    if (userDB && selectedPog.price) {
+    if (
+      userDB &&
+      selectedPog.price &&
+      userDB.ownedPogs.includes(selectedPog.id)
+    ) {
       const newBalance = userDB.balance + selectedPog.price
 
       try {
@@ -129,11 +141,14 @@ const Trade: React.FC<TradeProps> = ({ paramsID }) => {
       } catch (error) {
         console.error('Error buying Pog:', error)
       }
+    } else {
+      alert("You don't own this pog yet.")
+      return
     }
   }
 
   return (
-    <div className="max-w-md mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
+    <div className="max-w-md bg-white shadow-lg rounded-lg overflow-hidden">
       <div className="p-4 flex flex-col justify-center items-center">
         {selectedPog ? (
           <div className="space-y-4 flex-1">
@@ -145,17 +160,10 @@ const Trade: React.FC<TradeProps> = ({ paramsID }) => {
             <p>
               <span className="font-semibold">Price:</span> {selectedPog.price}
             </p>
-            <p>
-              <span className="font-semibold">Color:</span> {selectedPog.color}
-            </p>
-
-            <input
-              type="number"
-              className="border border-gray-300 rounded px-3 py-2"
-              value={amount}
-              onChange={(e) => setAmount(Number(e.target.value))}
-              placeholder="Enter amount"
-            />
+            <div
+              className="w-full h-2 rounded-md"
+              style={{ backgroundColor: selectedPog.color }}
+            ></div>
 
             <div className="flex justify-center gap-2">
               <button
@@ -173,7 +181,7 @@ const Trade: React.FC<TradeProps> = ({ paramsID }) => {
             </div>
           </div>
         ) : (
-          <p className="text-red-500">No Pog found with ID {paramsID}</p>
+          <p className="text-gray-500">Loading</p>
         )}
       </div>
     </div>

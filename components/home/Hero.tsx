@@ -59,8 +59,7 @@ const Hero = () => {
         <div className="w-full sm:w-1/2 flex items-center gap-2">
           {isLoggedIn ? (
             <>
-              <ButtonLink href="/trade">Buy</ButtonLink>
-              <ButtonLink href="/trade">Sell</ButtonLink>
+              <ButtonLink href="/trade">Trade</ButtonLink>
             </>
           ) : (
             <ButtonLink href="/api/auth/login">Login to start</ButtonLink>
